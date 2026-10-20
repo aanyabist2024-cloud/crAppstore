@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrAppStore: Download your problems today</title>
+<style>
+:root{--bg:#fff;--ink:#1d1d1f;--mut:#86868b;--brand:#0071e3;--line:#e5e5ea;--card:#f5f5f7;--ok:#34c759}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;padding:10px 20px}
+.logo{font-weight:700;font-size:19px;cursor:pointer;letter-spacing:-.4px}.logo small{display:none}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;gap:6px;background:rgba(249,249,249,.9);backdrop-filter:saturate(180%) blur(20px);border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{background:none;border:0;font:inherit;font-size:11px;color:var(--mut);display:flex;flex-direction:column;align-items:center;padding:4px 24px;cursor:pointer;border-radius:10px}
+nav button span{font-size:22px;filter:grayscale(1);opacity:.65}
+nav button.on{color:var(--brand)}nav button.on span{filter:none;opacity:1}
+.btn,.ghost{font:inherit;font-weight:700;border:0;border-radius:980px;padding:7px 20px;cursor:pointer}
+.btn{background:var(--brand);color:#fff}.btn:hover{background:#0062c4}.btn:disabled{opacity:.7}
+.ghost{background:var(--card);color:var(--brand)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #6cb4ff;outline-offset:2px}
+#q{flex:1;min-width:150px;max-width:360px;margin-left:auto;padding:8px 14px;border:0;border-radius:10px;font:inherit;background:#eeeef0}
+main{max-width:980px;margin:0 auto;padding:18px 20px 110px}
+h1,h2,h3{margin:0 0 8px;letter-spacing:-.4px}h1{font-size:32px}h2{font-size:22px}
+.mut{color:var(--mut);font-size:14px}.star{color:var(--mut)}
+.big{font-size:40px;font-weight:800;letter-spacing:-1px;margin:0 0 16px}
+.hero{border-radius:22px;padding:26px;min-height:240px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;cursor:pointer;margin-bottom:28px;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.55)),linear-gradient(135deg,#636366,#1c1c1e);box-shadow:0 8px 30px rgba(0,0,0,.18)}
+.hero .mut{color:#d1d1d6;font-weight:600}.hero h1{font-size:36px;margin:2px 0}.hero p{margin:0;color:#e5e5ea}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));column-gap:28px}
+.row{display:flex;gap:14px;align-items:center;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 0;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.row>div:nth-child(1):not(.ic):not(.rank){}
+.row .info{flex:1;min-width:0}
+.ic{flex:none;width:64px;height:64px;border-radius:22.4%;display:grid;place-items:center;font-size:34px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.ic.big{width:120px;height:120px;font-size:64px;margin:0}
+.get{flex:none;background:var(--card);color:var(--brand);font-weight:700;font-size:14px;border-radius:980px;padding:5px 18px;margin-left:auto}
+.top{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:16px 0}
+.strip{display:flex;overflow-x:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;margin-bottom:12px}
+.strip div{flex:1;min-width:100px;text-align:center;border-right:1px solid var(--line);padding:0 10px}.strip div:last-child{border:0}
+.strip b{display:block;font-size:17px}.strip span{font-size:12px;color:var(--mut)}
+.shots{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;margin:14px 0}
+.shot{flex:none;width:170px;height:300px;border-radius:26px;display:grid;place-items:center;text-align:center;padding:12px;font-size:13px;color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.shot b{display:block;font-size:44px}
+.card{background:var(--card);border-radius:18px;padding:18px;margin-bottom:16px}
+.vote{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.vote .ghost{background:#fff}
+.vbar{height:8px;border-radius:4px;background:#ff453a;overflow:hidden}.vbar i{display:block;height:100%;background:var(--ok)}
+.rev{border-top:1px solid var(--line);padding:10px 0}
+textarea,input[type=text],input[type=time],select{font:inherit;width:100%;padding:10px 12px;border:0;border-radius:10px;margin:6px 0;background:#fff}
+.rank{font-size:22px;font-weight:700;width:30px;flex:none;color:var(--ink)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;place-items:center;z-index:20;padding:14px}
+#modal.show{display:grid}
+.win{background:#fff;border-radius:18px;width:min(440px,100%);max-height:92vh;overflow:auto}
+.wh{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:var(--card);border-radius:18px 18px 0 0;border-bottom:1px solid var(--line)}
+.wh button{background:#d1d1d6;border:0;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer}
+.wb{padding:18px}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:rgba(29,29,31,.92);color:#fff;padding:10px 20px;border-radius:14px;display:none;z-index:30;max-width:90vw;text-align:center}
+.nl{max-height:300px;overflow:auto}
+.nt{display:flex;justify-content:space-between;gap:8px;align-items:center;background:var(--card);border-radius:14px;padding:10px 12px;margin-bottom:6px;font-size:14px}
+.nt button{border:0;background:var(--brand);color:#fff;border-radius:980px;padding:4px 12px;cursor:pointer}
+.bar{height:10px;background:#e5e5ea;border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--brand)}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc button{padding:14px;font:inherit;font-size:18px;border:0;border-radius:50px;background:#e5e5ea;cursor:pointer}
+.disp{background:#1d1d1f;color:#fff;border-radius:14px;padding:12px;text-align:right;font-size:28px;min-height:56px;margin-bottom:10px;overflow:hidden}
+.batt{width:150px;height:70px;border:5px solid var(--ink);border-radius:14px;margin:10px auto;position:relative;overflow:hidden}
+.batt i{position:absolute;inset:0 auto 0 0;background:var(--ok);transition:width .3s,background .3s}
+.batt:after{content:"";position:absolute;right:-14px;top:20px;width:8px;height:20px;background:var(--ink);border-radius:0 4px 4px 0}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:0 20px 120px;max-width:700px;margin:0 auto}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" onclick="go('home')" tabindex="0">CrAppStore<small>Download your problems today</small></div>
+  <nav>
+    <button id="t-home" onclick="go('home')"><span>🧩</span>Today</button>
+    <button id="t-trend" onclick="go('trend')"><span>📈</span>Top Charts</button>
+    <button id="t-upd" onclick="go('upd')"><span>⬇️</span>Updates</button>
+  </nav>
+  <input id="q" type="search" placeholder="Search for apps you don’t need" aria-label="Search apps" oninput="go('home')">
+</header>
+<main id="main"></main>
+<footer>CrAppStore is a parody inspired by the <a href="https://play.google.com/store" target="_blank" rel="noopener">Google Play Store</a>. Not affiliated with Google. No Google assets used. Built for the Neura AI STEAL//REMAKE hackathon. Every refund is final, as are most regrets.</footer>
+<div id="modal"><div class="win"><div class="wh"><b id="mt"></b><button onclick="closeM()" aria-label="Close">✕</button></div><div class="wb" id="mb"></div></div></div>
+<div id="toast" role="status"></div>
+<script>
+const APPS=[
+{id:'n',name:'Notification+',ic:'🔔',r:1.2,cat:'Productivity',dev:'Pingly Labs',dl:'10M+',tag:'Reminds you to check your notifications.',k:[120,980],
+ d:'Never miss a notification again. We will notify you about your notifications until you are notified out.',
+ rv:[['Dana',1,'Dismissed one. Now I have three. Send help.'],['Rohit',2,'Honestly the most engaged I have felt with my phone.']],
+ log:['Added more notifications','Notifications about notifications now notify'],pr:['Now sends reminders to dismiss reminders','Added a badge for your badges','Notifications now arrive before you install']},
+{id:'l',name:'Loading...',ic:'⏳',r:2.0,cat:'Utilities',dev:'Eventually Inc.',dl:'5M+',tag:'The ultimate productivity tool.',k:[300,640],
+ d:'A progress bar for a task we have not defined. Closing the app counts as giving up.',
+ rv:[['Meera',2,'Stuck at 99% for an hour. Relatable.'],['Sam',3,'Would give 5 stars but it never finished loading the review box.']],
+ log:['Progress bar is now 12% more hopeful','Fixed bug where it finished (it won’t happen again)'],pr:['Bar now slows down near the end for suspense','Added a spinner you can’t see','Loading time now loads slower']},
+{id:'p',name:'Procrastin8',ic:'🛋️',r:4.9,cat:'Education',dev:'Later Co.',dl:'1M+',tag:'The only planner that understands you.',k:[900,180],
+ d:'Add a task and we will suggest something far more interesting. Productivity is overrated.',
+ rv:[['Ananya',5,'Added “study”. It told me to alphabetise my spices. 10/10.'],['Kabir',5,'Finished zero assignments. Learned a lot about birds.']],
+ log:['Added 40 new distractions','Tasks can now be postponed to next year'],pr:['New suggestion category: staring out of windows','Tasks now auto-reschedule themselves to tomorrow','Added a nap timer with no alarm']},
+{id:'c',name:'Calculatorn’t',ic:'🧮',r:1.0,cat:'Tools',dev:'Doubt & Sons',dl:'500K+',tag:'Basic arithmetic, but with trust issues.',k:[200,820],
+ d:'Gives the right answer, then asks if you are really sure. You were probably right the first time.',
+ rv:[['Priya',1,'2+2=4. Are you sure? Now I’m not.'],['Dev',3,'Accurate, but emotionally exhausting.']],
+ log:['Improved doubt algorithm','Now second-guesses subtraction too'],pr:['Added confidence intervals for how wrong you are','Now sighs before showing results','Added a “Show your work” demand']},
+{id:'a',name:'Alarmed',ic:'⏰',r:1.1,cat:'Clock',dev:'Rise & Cry',dl:'3M+',tag:'Wakes you up at random times, including right now.',k:[90,1100],
+ d:'Set an alarm for any time you like. We will choose a better one, usually sooner than you expected.',
+ rv:[['Nikhil',1,'Set it for 7am. It rang at 7:00 and 4 seconds ago.'],['Sana',2,'Woke me up for a meeting that I did not have.']],
+ log:['Alarms now ring with more surprise','Fixed bug where alarms rang on time'],pr:['Added a snooze that is actually a louder alarm','Now rings during naps for fairness','Alarm time is now a suggestion']},
+{id:'b',name:'Batteryn’t',ic:'🔋',r:1.5,cat:'Device care',dev:'Anxiety Apps',dl:'2M+',tag:'Monitor your battery with unprecedented anxiety.',k:[150,900],
+ d:'Shows your battery percentage and drops it whenever you look. Observation affects the charge. Science.',
+ rv:[['Ishaan',1,'Looked at it twice, lost 8%. Stopped looking, felt worse.'],['Tara',2,'Lowest battery I have ever emotionally experienced.']],
+ log:['Percentage now drops faster when watched','Added fear-based fast charging'],pr:['Now panics at 50%','Added a low battery warning at all battery levels','Charging cable now imaginary']}
+];
+const KEY='crappstore';let st={inst:{},votes:{},rev:{},upd:{}};
+try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const $=s=>document.querySelector(s),pick=a=>a[Math.floor(Math.random()*a.length)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const stars=r=>'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
+const ics=a=>`background:linear-gradient(160deg,rgba(255,255,255,.3),rgba(255,255,255,0)),${({n:'#ff453a',l:'#8e8e93',p:'#af52de',c:'#ff9f0a',b:'#30d158',a:'#0a84ff'})[a.id]}`;
+const byId=id=>APPS.find(a=>a.id===id);
+let timers=[],tt;
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
+function openM(title,html){$('#mt').textContent=title;$('#mb').innerHTML=html;$('#modal').classList.add('show')}
+function closeM(){$('#modal').classList.remove('show');timers.forEach(clearInterval);timers=[];$('#mb').innerHTML=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+const votes=a=>{const v=st.votes[a.id];return[a.k[0]+(v==='k'?1:0),a.k[1]+(v==='d'?1:0)]};
+const useless=a=>{const[k,d]=votes(a);return Math.round((5-a.r)*20+d/10-k/20)};
+const row=(a,pre='')=>`<button class="row" onclick="go('app','${a.id}')">${pre}<div class="ic" style="${ics(a)}">${a.ic}</div><div class="info"><b>${a.name}</b><div class="mut">${a.tag}</div><div class="mut">${a.r.toFixed(1)} ★ · ${a.dl}</div></div><span class="get">${st.inst[a.id]?'OPEN':'GET'}</span></button>`;
+function go(v,id){
+  ['home','trend','upd'].forEach(t=>$('#t-'+t)?.classList.toggle('on',(t==='trend'?'trend':t)===v));
+  const m=$('#main');window.scrollTo(0,0);
+  if(v==='home'){
+    const q=$('#q').value.toLowerCase(),l=APPS.filter(a=>(a.name+a.cat+a.tag).toLowerCase().includes(q));
+    m.innerHTML=`<div class="mut">${new Date().toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric'})}</div><div class="big">Today</div><div class="hero" onclick="go('app','a')"><div class="mut">App of the day</div><h1>Alarmed</h1><p>Wakes you up at random times. Including right now.</p></div><h2>Apps we regret recommending</h2><div class="grid">${l.map(a=>row(a)).join('')||'<p class="mut">No apps found. Suspiciously, that’s the best result so far.</p>'}</div>`;
+  }else if(v==='trend'){
+    const l=[...APPS].sort((a,b)=>useless(b)-useless(a));
+    m.innerHTML=`<div class="big">Top Charts</div><p class="mut">Ranked by uselessness score. Worse apps rank higher.</p><div class="grid">${l.map((a,i)=>row(a,`<div class="rank">${i+1}</div>`).replace('</div></div><span',` · Uselessness ${useless(a)}</div></div><span`)).join('')}</div>`;
+  }else if(v==='upd'){
+    const n=Object.values(st.upd).reduce((s,x)=>s+x,0);
+    m.innerHTML=`<div class="big">Updates</div><div class="card"><b>${APPS.length} updates available</b><p class="mut">Each one includes bug fixes, performance improvements, and new problems. You have installed ${n} so far.</p><button class="btn" onclick="updateAll()">Update all</button></div>${APPS.map(a=>row(a)).join('')}`;
+  }else app(id);
+}
+function chlog(a){const n=st.upd[a.id]||0,l=[...a.log];for(let i=1;i<=n;i++)l.unshift(`v1.${i}: ${a.pr[(i-1)%a.pr.length]}${i>a.pr.length?' (again)':''}`);return l}
+function app(id){
+  const a=byId(id),ins=st.inst[id],[k,d]=votes(a),mine=st.rev[id]||[],all=[...mine,...a.rv.map(r=>({n:r[0],s:r[1],t:r[2]}))];
+  $('#main').innerHTML=`<button class="ghost" onclick="go('home')">Back to apps</button>
+  <div class="top" style="margin-top:14px"><div class="ic big" style="${ics(a)}">${a.ic}</div><div><h1>${a.name}</h1><div style="color:var(--brand)">${a.dev}</div><div class="mut">${a.tag}</div>
+  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="ib" onclick="${ins?`launch('${id}')`:`install('${id}')`}">${ins?'OPEN':'GET'}</button>${ins?`<button class="ghost" onclick="uninstall('${id}')">Uninstall</button>`:''}<button class="ghost" onclick="refund('${id}')">Request refund</button></div></div></div>
+  <div class="strip"><div><b>${a.r.toFixed(1)} ★</b><span>${a.dl} ratings</span></div><div><b>4+</b><span>Age</span></div><div><b>${a.cat}</b><span>Category</span></div><div><b>${a.dev.split(' ')[0]}</b><span>Developer</span></div></div>
+  <div class="shots">${shots(a).map(s=>`<div class="shot" style="${ics(a)}"><div><b>${s[0]}</b>${s[1]}</div></div>`).join('')}</div>
+  <div class="card"><h3>About this app</h3><p>${a.d}</p><p class="mut">${a.tag}</p></div>
+  <div class="card"><h3>Should this app survive?</h3><div class="vbar"><i style="width:${Math.round(k/(k+d)*100)}%"></i></div><div class="mut">${k} want it kept · ${d} want it deleted</div>
+  <div class="vote"><button class="ghost" onclick="vote('${id}','k')">${st.votes[id]==='k'?'✓ ':''}Keep it</button><button class="ghost" onclick="vote('${id}','d')">${st.votes[id]==='d'?'✓ ':''}Delete it</button></div></div>
+  <div class="card"><h3>What’s new</h3>${chlog(a).map(x=>`<div class="mut">• ${x}</div>`).join('')}</div>
+  <div class="card"><h3>Reviews</h3><select id="rs" aria-label="Stars"><option value="1">★ 1 star</option><option value="2">★★ 2 stars</option><option value="3">★★★ 3 stars</option><option value="4">★★★★ 4 stars</option><option value="5">★★★★★ 5 stars</option></select><input type="text" id="rn" placeholder="Your name" maxlength="30"><textarea id="rt" rows="2" placeholder="Tell us how this ruined your day" maxlength="300"></textarea><button class="btn" onclick="postRev('${id}')">Post review</button>
+  ${all.map(r=>`<div class="rev"><b>${esc(r.n)}</b> <span class="star">${stars(r.s)}</span><div>${esc(r.t)}</div></div>`).join('')}</div>`;
+}
+function shots(a){const m={n:[['🔔','47 unread'],['🔔🔔🔔','Now 3 more'],['😵','Notification fatigue']],l:[['⏳','Loading...'],['99%','Almost there'],['⏳','Still 99%']],p:[['🛋️','Add task'],['🐦','Watch birds instead'],['🍿','Snack time']],c:[['2+2','= 4'],['🤔','Are you sure?'],['😬','Now doubting']],a:[['⏰','Set alarm'],['⏰⏰','Ringing early'],['😵','It’s 3 AM']],b:[['🔋','100%'],['🪫','92% (you looked)'],['😰','Panic']]};return m[a.id]}
+function vote(id,v){st.votes[id]=st.votes[id]===v?null:v;save();app(id);toast(v==='d'?'Your vote to delete has been noted and ignored.':'Vote counted. Nobody asked.')}
+function postRev(id){const t=$('#rt').value.trim();if(!t)return toast('Write something. Even a complaint.');(st.rev[id]=st.rev[id]||[]).unshift({n:$('#rn').value.trim()||'Anonymous',s:+$('#rs').value,t});save();app(id);toast('Review posted. We read none of them.')}
+function install(id){
+  const b=$('#ib');let p=0;b.disabled=true;
+  const t=setInterval(()=>{p+=Math.random()*22;if(p>=100){clearInterval(t);st.inst[id]=1;save();toast('Installed. Regret loading...');app(id)}else b.textContent='Installing… '+Math.floor(p)+'%'},250);
+}
+function uninstall(id){delete st.inst[id];save();app(id);toast('Uninstalled. It will be back.')}
+function updateAll(){
+  const out=APPS.map(a=>{st.inst[a.id]=1;st.upd[a.id]=(st.upd[a.id]||0)+1;return`<div class="rev"><b>${a.name}</b> v1.${st.upd[a.id]}<div class="mut">${a.pr[(st.upd[a.id]-1)%a.pr.length]}</div></div>`}).join('');
+  save();openM('Update complete',`<p><b>${APPS.length} new problems installed.</b></p>${out}<button class="btn" onclick="closeM();go('upd')">Great, thanks</button>`);
+}
+function refund(id){
+  const a=byId(id),msgs=['Thank you for contacting us. Your refund request is important to us, so we filed it carefully in a place you cannot find.','Your refund has been escalated to a team that has been escalated to another team.','We reviewed your request and found the app was working as designed. You were charged $0.00, and we feel that was fair.','Refunds are available within 0 minutes of regret. Your regret began at 1 minute.','Your refund is approved! Please allow 6 to 8 business years for processing.'];
+  openM('Request refund',`<p>Refund for <b>${a.name}</b></p><textarea rows="3" id="rr" placeholder="Why do you want a refund?"></textarea><button class="btn" onclick="$('#mb').innerHTML='<p>${'Ticket #'+'CR-'+Math.floor(Math.random()*90000+10000)}</p><p>'+pick(${JSON.stringify(msgs).replace(/"/g,'&quot;')})+'</p><button class=\\'btn\\' onclick=\\'closeM()\\'>Understood</button>'">Submit request</button>`);
+}
+function launch(id){const a=byId(id);openM(a.name,'');RUN[id]($('#mb'))}
+const RUN={
+n(b){
+  const L=['You have 1 notification. Check your notifications.','Reminder: you have unchecked reminders.','Someone viewed your notification settings.','Your notifications are lonely.','Time to dismiss a notification!','You have mail about your mail.'];
+  b.innerHTML='<div class="mut" id="nc"></div><div class="nl"></div>';const l=b.querySelector('.nl'),nc=b.querySelector('#nc');
+  const upd=()=>nc.textContent=l.children.length+' unread notifications';
+  function add(){if(l.children.length>=40){nc.textContent='Maximum reached. Increasing maximum.';return}const d=document.createElement('div');d.className='nt';d.innerHTML='<span>🔔 '+pick(L)+'</span><button>Dismiss</button>';d.querySelector('button').onclick=()=>{d.remove();add();add();add();upd()};l.prepend(d);upd()}
+  add();
+},
+l(b){
+  let p=0;b.innerHTML='<h3>Loading…</h3><div class="bar"><i id="pb"></i></div><p id="pt">0%</p><button class="btn" id="gu">Close</button>';
+  const pb=$('#pb'),pt=$('#pt');
+  timers.push(setInterval(()=>{p+=(99-p)*.05+.01;if(p>99.95)p=99.95;pb.style.width=p+'%';const f=Math.min(99,Math.floor(p));pt.textContent=f+'% '+(f<50?'':f<90?'· Almost there':f<99?'· Just a moment':'· One more second')},200));
+  $('#gu').onclick=()=>{closeM();toast('Giving up has been recorded on your permanent record.')};
+},
+p(b){
+  const S=['Alphabetise your spice rack','Learn all the capitals of Africa','Watch a documentary about owls','Reorganise your desktop icons by colour','Google “can dogs eat grapes” (they can’t)','Stare out of the window thoughtfully','Make a playlist for a road trip you aren’t taking','Rewatch your favourite episode for research'];
+  let items=[];b.innerHTML='<h3>Procrastin8</h3><input type="text" id="ti" placeholder="What do you need to do?" maxlength="60"><button class="btn" id="ta">Add task</button><div id="tl"></div>';
+  const go2=()=>{const v=$('#ti').value.trim();if(!v)return;items.unshift([v,pick(S)]);$('#ti').value='';$('#tl').innerHTML=items.map(i=>`<div class="rev"><s class="mut">${esc(i[0])}</s><div>Better idea: <b>${i[1]}</b></div></div>`).join('')};
+  $('#ta').onclick=go2;$('#ti').onkeydown=e=>{if(e.key==='Enter')go2()};
+},
+c(b){
+  let e='';b.innerHTML='<div class="disp" id="cd">0</div><div class="calc" id="cg"></div><div id="cq"></div>';
+  const cd=$('#cd'),cq=$('#cq');
+  ['7','8','9','÷','4','5','6','×','1','2','3','-','C','0','.','+','(',')','⌫','='].forEach(k=>{const x=document.createElement('button');x.textContent=k;x.onclick=()=>press(k);$('#cg').append(x)});
+  function press(k){cq.innerHTML='';
+    if(k==='C')e='';else if(k==='⌫')e=e.slice(0,-1);else if(k==='='){
+      const s=e.replace(/×/g,'*').replace(/÷/g,'/');if(!/^[\d+\-*/.() ]+$/.test(s)||!s)return;
+      let r;try{r=Function('return '+s)()}catch(x){cd.textContent='Error';return}
+      if(!isFinite(r)){cd.textContent='Nice try';e='';return}
+      r=+r.toPrecision(12);e=String(r);cd.textContent=e;
+      if(Math.random()<.5){cq.innerHTML='<p><b>Are you sure?</b></p><button class="btn" id="y">Yes</button> <button class="ghost" id="n">No</button>';$('#y').onclick=()=>cq.innerHTML='<p class="mut">Bold of you.</p>';$('#n').onclick=()=>cq.innerHTML='<p class="mut">Same answer. Just wanted to see you hesitate.</p>'}
+      return}
+    else e+=k;cd.textContent=e||'0'}
+},
+a(b){
+  b.innerHTML='<h3>Alarmed</h3><div class="mut">Pick a time. We’ll pick a better one.</div><input type="time" id="at" value="07:00"><button class="btn" id="as">Set alarm</button><div id="am"></div>';
+  const am=$('#am');
+  function arm(){const t=$('#at').value||'07:00',d=2000+Math.random()*4000;am.innerHTML='<p class="mut">Alarm set for '+t+'. Ringing at a time of our choosing…</p>';
+    timers.push(setTimeout(()=>{const x=new Date(Date.now()+Math.random()*864e5).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});am.innerHTML='<div class="disp">⏰ '+x+'</div><p><b>RING RING!</b> Good morning, whatever time it is.</p><button class="btn" id="st">Stop</button> <button class="ghost" id="sn">Snooze</button>';
+      if(navigator.vibrate)navigator.vibrate([200,100,200]);
+      $('#st').onclick=()=>{am.innerHTML='<p class="mut">Alarm stopped. We set another one for you.</p>';arm()};
+      $('#sn').onclick=()=>{am.innerHTML='<p class="mut">Snoozed for 0 minutes.</p>';setTimeout(()=>arm(),300)}},d))}
+  $('#as').onclick=arm;
+},
+b(b){
+  let p=100,last=0;b.innerHTML='<div style="text-align:center"><h3 id="bp">100%</h3><div class="batt"><i id="bf" style="width:100%"></i></div><p class="mut" id="bm">Battery is fine. Keep an eye on it.</p></div>';
+  const M=[[80,'Battery is fine. Keep an eye on it.'],[50,'Is it dropping? It feels like it’s dropping.'],[25,'You looked. That cost us.'],[10,'Please stop watching.'],[0,'This is the end.']];
+  function drop(n){p-=n;if(p<=1){p=100;toast('Recharged by pure panic.')}$('#bp').textContent=Math.floor(p)+'%';const f=$('#bf');f.style.width=p+'%';f.style.background=p<25?'#b91c1c':p<50?'#d97706':'var(--ok)';$('#bm').textContent=M.find(x=>p>x[0])?.[1]||M[4][1]}
+  b.onmousemove=b.ontouchstart=()=>{const t=Date.now();if(t-last>250){last=t;drop(1+Math.random()*2)}};
+  timers.push(setInterval(()=>drop(.7),1200));
+}};
+go('home');
+</script>
+</body>
+</html>
