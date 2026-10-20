@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrAppStore: Download your problems today</title>
+<style>
+:root{--bg:#fbf7f0;--ink:#2a2118;--mut:#7a6d5f;--brand:#c2410c;--line:#e6dccd;--card:#fff;--ok:#2f7d4f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Trebuchet MS",Verdana,system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:10px 20px}
+.logo{font:800 24px Georgia,serif;color:var(--brand);cursor:pointer;letter-spacing:-.5px}
+.logo small{display:block;font:11px Verdana,sans-serif;color:var(--mut);letter-spacing:0}
+nav{display:flex;gap:4px}
+nav button,.btn,.ghost{font:inherit;border:0;border-radius:20px;padding:8px 18px;cursor:pointer}
+nav button{background:none;color:var(--mut)}nav button.on{background:#fde8d8;color:var(--brand);font-weight:700}
+.btn{background:var(--brand);color:#fff;font-weight:700}.btn:hover{background:#9a3412}
+.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+#q{flex:1;min-width:160px;max-width:420px;margin-left:auto;padding:9px 16px;border:1px solid var(--line);border-radius:20px;font:inherit;background:var(--bg)}
+main{max-width:980px;margin:0 auto;padding:24px 20px 60px}
+h1,h2,h3{font-family:Georgia,serif;margin:0 0 8px}
+.hero{background:var(--ink);color:#fbf7f0;border-radius:18px;padding:26px 28px;margin-bottom:26px}
+.hero h1{font-size:34px;margin:0 0 6px}.hero p{margin:0;color:#e8d9c4}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.row{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.row:hover{border-color:var(--brand)}
+.ic{flex:none;width:64px;height:64px;border-radius:16px;background:#fde8d8;display:grid;place-items:center;font-size:34px}
+.ic.big{width:110px;height:110px;font-size:60px;border-radius:26px}
+.mut{color:var(--mut);font-size:14px}
+.star{color:#d97706}
+.top{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.shots{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;margin:14px 0}
+.shot{flex:none;width:150px;height:260px;border-radius:14px;display:grid;place-items:center;text-align:center;padding:10px;font-size:13px;color:#fff;background:linear-gradient(160deg,#7c2d12,#c2410c)}
+.shot b{display:block;font-size:44px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.vote{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.vbar{height:10px;border-radius:5px;background:#b91c1c;overflow:hidden}.vbar i{display:block;height:100%;background:var(--ok)}
+.rev{border-top:1px solid var(--line);padding:10px 0}
+textarea,input[type=text],select{font:inherit;width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin:6px 0;background:#fff}
+.rank{font:800 26px Georgia,serif;color:var(--brand);width:36px;flex:none}
+#modal{position:fixed;inset:0;background:rgba(42,33,24,.6);display:none;place-items:center;z-index:20;padding:14px}
+#modal.show{display:grid}
+.win{background:#fff;border-radius:16px;width:min(440px,100%);max-height:92vh;overflow:auto}
+.wh{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--ink);color:#fff;border-radius:16px 16px 0 0}
+.wh button{background:none;border:0;color:#fff;font-size:20px;cursor:pointer}
+.wb{padding:18px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:24px;display:none;z-index:30;max-width:90vw;text-align:center}
+.nl{max-height:300px;overflow:auto}
+.nt{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:8px 10px;margin-bottom:6px;font-size:14px}
+.nt button{border:0;background:var(--brand);color:#fff;border-radius:12px;padding:4px 10px;cursor:pointer}
+.bar{height:22px;background:#eee;border-radius:11px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--brand)}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc button{padding:14px;font:inherit;font-size:18px;border:1px solid var(--line);border-radius:10px;background:#faf5ec;cursor:pointer}
+.disp{background:var(--ink);color:#fff;border-radius:10px;padding:12px;text-align:right;font-size:26px;min-height:54px;margin-bottom:10px;overflow:hidden}
+.batt{width:150px;height:70px;border:5px solid var(--ink);border-radius:12px;margin:10px auto;position:relative;overflow:hidden}
+.batt i{position:absolute;inset:0 auto 0 0;background:var(--ok);transition:width .3s,background .3s}
+.batt:after{content:"";position:absolute;right:-14px;top:20px;width:8px;height:20px;background:var(--ink);border-radius:0 4px 4px 0}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:0 20px 40px;max-width:700px;margin:0 auto}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" onclick="go('home')" tabindex="0">CrAppStore<small>Download your problems today</small></div>
+  <nav>
+    <button id="t-home" onclick="go('home')">Apps</button>
+    <button id="t-trend" onclick="go('trend')">Trending</button>
+    <button id="t-upd" onclick="go('upd')">Updates</button>
+  </nav>
+  <input id="q" type="search" placeholder="Search for apps you don’t need" aria-label="Search apps" oninput="go('home')">
+</header>
+<main id="main"></main>
+<footer>CrAppStore is a parody inspired by the <a href="https://play.google.com/store" target="_blank" rel="noopener">Google Play Store</a>. Not affiliated with Google. No Google assets used. Built for the Neura AI STEAL//REMAKE hackathon. Every refund is final, as are most regrets.</footer>
+<div id="modal"><div class="win"><div class="wh"><b id="mt"></b><button onclick="closeM()" aria-label="Close">✕</button></div><div class="wb" id="mb"></div></div></div>
+<div id="toast" role="status"></div>
+<script>
+const APPS=[
+{id:'n',name:'Notification+',ic:'🔔',r:1.2,cat:'Productivity',dev:'Pingly Labs',dl:'10M+',tag:'Reminds you to check your notifications.',k:[120,980],
+ d:'Never miss a notification again. We will notify you about your notifications until you are notified out.',
+ rv:[['Dana',1,'Dismissed one. Now I have three. Send help.'],['Rohit',2,'Honestly the most engaged I have felt with my phone.']],
+ log:['Added more notifications','Notifications about notifications now notify'],pr:['Now sends reminders to dismiss reminders','Added a badge for your badges','Notifications now arrive before you install']},
+{id:'l',name:'Loading...',ic:'⏳',r:2.0,cat:'Utilities',dev:'Eventually Inc.',dl:'5M+',tag:'The ultimate productivity tool.',k:[300,640],
+ d:'A progress bar for a task we have not defined. Closing the app counts as giving up.',
+ rv:[['Meera',2,'Stuck at 99% for an hour. Relatable.'],['Sam',3,'Would give 5 stars but it never finished loading the review box.']],
+ log:['Progress bar is now 12% more hopeful','Fixed bug where it finished (it won’t happen again)'],pr:['Bar now slows down near the end for suspense','Added a spinner you can’t see','Loading time now loads slower']},
+{id:'p',name:'Procrastin8',ic:'🛋️',r:4.9,cat:'Education',dev:'Later Co.',dl:'1M+',tag:'The only planner that understands you.',k:[900,180],
+ d:'Add a task and we will suggest something far more interesting. Productivity is overrated.',
+ rv:[['Ananya',5,'Added “study”. It told me to alphabetise my spices. 10/10.'],['Kabir',5,'Finished zero assignments. Learned a lot about birds.']],
+ log:['Added 40 new distractions','Tasks can now be postponed to next year'],pr:['New suggestion category: staring out of windows','Tasks now auto-reschedule themselves to tomorrow','Added a nap timer with no alarm']},
+{id:'c',name:'Calculatorn’t',ic:'🧮',r:1.0,cat:'Tools',dev:'Doubt & Sons',dl:'500K+',tag:'Basic arithmetic, but with trust issues.',k:[200,820],
+ d:'Gives the right answer, then asks if you are really sure. You were probably right the first time.',
+ rv:[['Priya',1,'2+2=4. Are you sure? Now I’m not.'],['Dev',3,'Accurate, but emotionally exhausting.']],
+ log:['Improved doubt algorithm','Now second-guesses subtraction too'],pr:['Added confidence intervals for how wrong you are','Now sighs before showing results','Added a “Show your work” demand']},
+{id:'b',name:'Batteryn’t',ic:'🔋',r:1.5,cat:'Device care',dev:'Anxiety Apps',dl:'2M+',tag:'Monitor your battery with unprecedented anxiety.',k:[150,900],
+ d:'Shows your battery percentage and drops it whenever you look. Observation affects the charge. Science.',
+ rv:[['Ishaan',1,'Looked at it twice, lost 8%. Stopped looking, felt worse.'],['Tara',2,'Lowest battery I have ever emotionally experienced.']],
+ log:['Percentage now drops faster when watched','Added fear-based fast charging'],pr:['Now panics at 50%','Added a low battery warning at all battery levels','Charging cable now imaginary']}
+];
+const KEY='crappstore';let st={inst:{},votes:{},rev:{},upd:{}};
+try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const $=s=>document.querySelector(s),pick=a=>a[Math.floor(Math.random()*a.length)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const stars=r=>'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
+const byId=id=>APPS.find(a=>a.id===id);
+let timers=[],tt;
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
+function openM(title,html){$('#mt').textContent=title;$('#mb').innerHTML=html;$('#modal').classList.add('show')}
+function closeM(){$('#modal').classList.remove('show');timers.forEach(clearInterval);timers=[];$('#mb').innerHTML=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+const votes=a=>{const v=st.votes[a.id];return[a.k[0]+(v==='k'?1:0),a.k[1]+(v==='d'?1:0)]};
+const useless=a=>{const[k,d]=votes(a);return Math.round((5-a.r)*20+d/10-k/20)};
+const row=(a,pre='')=>`<button class="row" onclick="go('app','${a.id}')">${pre}<div class="ic">${a.ic}</div><div><b>${a.name}</b><div class="mut">${a.cat} · ${a.dev}</div><div><span class="star">${a.r.toFixed(1)}★</span> <span class="mut">${a.dl} downloads${st.inst[a.id]?' · Installed':''}</span></div></div></button>`;
+function go(v,id){
+  ['home','trend','upd'].forEach(t=>$('#t-'+t)?.classList.toggle('on',(t==='trend'?'trend':t)===v));
+  const m=$('#main');window.scrollTo(0,0);
+  if(v==='home'){
+    const q=$('#q').value.toLowerCase(),l=APPS.filter(a=>(a.name+a.cat+a.tag).toLowerCase().includes(q));
+    m.innerHTML=`<div class="hero"><h1>Download your problems today.</h1><p>The world’s worst apps. Polished, trusted by millions, and deeply unhelpful.</p></div><h2>Recommended for nobody</h2><div class="grid">${l.map(a=>row(a)).join('')||'<p class="mut">No apps found. Suspiciously, that’s the best result so far.</p>'}</div>`;
+  }else if(v==='trend'){
+    const l=[...APPS].sort((a,b)=>useless(b)-useless(a));
+    m.innerHTML=`<h2>Trending now</h2><p class="mut">Ranked by uselessness score. Worse apps rank higher.</p><div class="grid">${l.map((a,i)=>row(a,`<div class="rank">${i+1}</div>`).replace('</div></div></button>',` · Uselessness ${useless(a)}</div></div></button>`)).join('')}</div>`;
+  }else if(v==='upd'){
+    const n=Object.values(st.upd).reduce((s,x)=>s+x,0);
+    m.innerHTML=`<h2>Updates</h2><div class="card"><b>${APPS.length} updates available</b><p class="mut">Each one includes bug fixes, performance improvements, and new problems. You have installed ${n} so far.</p><button class="btn" onclick="updateAll()">Update all</button></div>${APPS.map(a=>row(a)).join('')}`;
+  }else app(id);
+}
+function chlog(a){const n=st.upd[a.id]||0,l=[...a.log];for(let i=1;i<=n;i++)l.unshift(`v1.${i}: ${a.pr[(i-1)%a.pr.length]}${i>a.pr.length?' (again)':''}`);return l}
+function app(id){
+  const a=byId(id),ins=st.inst[id],[k,d]=votes(a),mine=st.rev[id]||[],all=[...mine,...a.rv.map(r=>({n:r[0],s:r[1],t:r[2]}))];
+  $('#main').innerHTML=`<button class="ghost" onclick="go('home')">Back to apps</button>
+  <div class="top" style="margin-top:14px"><div class="ic big">${a.ic}</div><div><h1>${a.name}</h1><div style="color:var(--brand);font-weight:700">${a.dev}</div><div class="mut">${a.cat} · ${a.dl} downloads · <span class="star">${a.r.toFixed(1)}★</span></div>
+  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="ib" onclick="${ins?`launch('${id}')`:`install('${id}')`}">${ins?'Open':'Install'}</button>${ins?`<button class="ghost" onclick="uninstall('${id}')">Uninstall</button>`:''}<button class="ghost" onclick="refund('${id}')">Request refund</button></div></div></div>
+  <div class="shots">${shots(a).map(s=>`<div class="shot"><div><b>${s[0]}</b>${s[1]}</div></div>`).join('')}</div>
+  <div class="card"><h3>About this app</h3><p>${a.d}</p><p class="mut">${a.tag}</p></div>
+  <div class="card"><h3>Should this app survive?</h3><div class="vbar"><i style="width:${Math.round(k/(k+d)*100)}%"></i></div><div class="mut">${k} want it kept · ${d} want it deleted</div>
+  <div class="vote"><button class="ghost" onclick="vote('${id}','k')">${st.votes[id]==='k'?'✓ ':''}Keep it</button><button class="ghost" onclick="vote('${id}','d')">${st.votes[id]==='d'?'✓ ':''}Delete it</button></div></div>
+  <div class="card"><h3>What’s new</h3>${chlog(a).map(x=>`<div class="mut">• ${x}</div>`).join('')}</div>
+  <div class="card"><h3>Reviews</h3><select id="rs" aria-label="Stars"><option value="1">★ 1 star</option><option value="2">★★ 2 stars</option><option value="3">★★★ 3 stars</option><option value="4">★★★★ 4 stars</option><option value="5">★★★★★ 5 stars</option></select><input type="text" id="rn" placeholder="Your name" maxlength="30"><textarea id="rt" rows="2" placeholder="Tell us how this ruined your day" maxlength="300"></textarea><button class="btn" onclick="postRev('${id}')">Post review</button>
+  ${all.map(r=>`<div class="rev"><b>${esc(r.n)}</b> <span class="star">${stars(r.s)}</span><div>${esc(r.t)}</div></div>`).join('')}</div>`;
+}
+function shots(a){const m={n:[['🔔','47 unread'],['🔔🔔🔔','Now 3 more'],['😵','Notification fatigue']],l:[['⏳','Loading...'],['99%','Almost there'],['⏳','Still 99%']],p:[['🛋️','Add task'],['🐦','Watch birds instead'],['🍿','Snack time']],c:[['2+2','= 4'],['🤔','Are you sure?'],['😬','Now doubting']],b:[['🔋','100%'],['🪫','92% (you looked)'],['😰','Panic']]};return m[a.id]}
+function vote(id,v){st.votes[id]=st.votes[id]===v?null:v;save();app(id);toast(v==='d'?'Your vote to delete has been noted and ignored.':'Vote counted. Nobody asked.')}
+function postRev(id){const t=$('#rt').value.trim();if(!t)return toast('Write something. Even a complaint.');(st.rev[id]=st.rev[id]||[]).unshift({n:$('#rn').value.trim()||'Anonymous',s:+$('#rs').value,t});save();app(id);toast('Review posted. We read none of them.')}
+function install(id){
+  const b=$('#ib');let p=0;b.disabled=true;
+  const t=setInterval(()=>{p+=Math.random()*22;if(p>=100){clearInterval(t);st.inst[id]=1;save();toast('Installed. Regret loading...');app(id)}else b.textContent='Installing… '+Math.floor(p)+'%'},250);
+}
+function uninstall(id){delete st.inst[id];save();app(id);toast('Uninstalled. It will be back.')}
+function updateAll(){
+  const out=APPS.map(a=>{st.inst[a.id]=1;st.upd[a.id]=(st.upd[a.id]||0)+1;return`<div class="rev"><b>${a.name}</b> v1.${st.upd[a.id]}<div class="mut">${a.pr[(st.upd[a.id]-1)%a.pr.length]}</div></div>`}).join('');
+  save();openM('Update complete',`<p><b>${APPS.length} new problems installed.</b></p>${out}<button class="btn" onclick="closeM();go('upd')">Great, thanks</button>`);
+}
+function refund(id){
+  const a=byId(id),msgs=['Thank you for contacting us. Your refund request is important to us, so we filed it carefully in a place you cannot find.','Your refund has been escalated to a team that has been escalated to another team.','We reviewed your request and found the app was working as designed. You were charged $0.00, and we feel that was fair.','Refunds are available within 0 minutes of regret. Your regret began at 1 minute.','Your refund is approved! Please allow 6 to 8 business years for processing.'];
+  openM('Request refund',`<p>Refund for <b>${a.name}</b></p><textarea rows="3" id="rr" placeholder="Why do you want a refund?"></textarea><button class="btn" onclick="$('#mb').innerHTML='<p>${'Ticket #'+'CR-'+Math.floor(Math.random()*90000+10000)}</p><p>'+pick(${JSON.stringify(msgs).replace(/"/g,'&quot;')})+'</p><button class=\\'btn\\' onclick=\\'closeM()\\'>Understood</button>'">Submit request</button>`);
+}
+function launch(id){const a=byId(id);openM(a.name,'');RUN[id]($('#mb'))}
+const RUN={
+n(b){
+  const L=['You have 1 notification. Check your notifications.','Reminder: you have unchecked reminders.','Someone viewed your notification settings.','Your notifications are lonely.','Time to dismiss a notification!','You have mail about your mail.'];
+  b.innerHTML='<div class="mut" id="nc"></div><div class="nl"></div>';const l=b.querySelector('.nl'),nc=b.querySelector('#nc');
+  const upd=()=>nc.textContent=l.children.length+' unread notifications';
+  function add(){if(l.children.length>=40){nc.textContent='Maximum reached. Increasing maximum.';return}const d=document.createElement('div');d.className='nt';d.innerHTML='<span>🔔 '+pick(L)+'</span><button>Dismiss</button>';d.querySelector('button').onclick=()=>{d.remove();add();add();add();upd()};l.prepend(d);upd()}
+  add();
+},
+l(b){
+  let p=0;b.innerHTML='<h3>Loading…</h3><div class="bar"><i id="pb"></i></div><p id="pt">0%</p><button class="btn" id="gu">Close</button>';
+  const pb=$('#pb'),pt=$('#pt');
+  timers.push(setInterval(()=>{p+=(99-p)*.05+.01;if(p>99.95)p=99.95;pb.style.width=p+'%';const f=Math.min(99,Math.floor(p));pt.textContent=f+'% '+(f<50?'':f<90?'· Almost there':f<99?'· Just a moment':'· One more second')},200));
+  $('#gu').onclick=()=>{closeM();toast('Giving up has been recorded on your permanent record.')};
+},
+p(b){
+  const S=['Alphabetise your spice rack','Learn all the capitals of Africa','Watch a documentary about owls','Reorganise your desktop icons by colour','Google “can dogs eat grapes” (they can’t)','Stare out of the window thoughtfully','Make a playlist for a road trip you aren’t taking','Rewatch your favourite episode for research'];
+  let items=[];b.innerHTML='<h3>Procrastin8</h3><input type="text" id="ti" placeholder="What do you need to do?" maxlength="60"><button class="btn" id="ta">Add task</button><div id="tl"></div>';
+  const go2=()=>{const v=$('#ti').value.trim();if(!v)return;items.unshift([v,pick(S)]);$('#ti').value='';$('#tl').innerHTML=items.map(i=>`<div class="rev"><s class="mut">${esc(i[0])}</s><div>Better idea: <b>${i[1]}</b></div></div>`).join('')};
+  $('#ta').onclick=go2;$('#ti').onkeydown=e=>{if(e.key==='Enter')go2()};
+},
+c(b){
+  let e='';b.innerHTML='<div class="disp" id="cd">0</div><div class="calc" id="cg"></div><div id="cq"></div>';
+  const cd=$('#cd'),cq=$('#cq');
+  ['7','8','9','÷','4','5','6','×','1','2','3','-','C','0','.','+','(',')','⌫','='].forEach(k=>{const x=document.createElement('button');x.textContent=k;x.onclick=()=>press(k);$('#cg').append(x)});
+  function press(k){cq.innerHTML='';
+    if(k==='C')e='';else if(k==='⌫')e=e.slice(0,-1);else if(k==='='){
+      const s=e.replace(/×/g,'*').replace(/÷/g,'/');if(!/^[\d+\-*/.() ]+$/.test(s)||!s)return;
+      let r;try{r=Function('return '+s)()}catch(x){cd.textContent='Error';return}
+      if(!isFinite(r)){cd.textContent='Nice try';e='';return}
+      r=+r.toPrecision(12);e=String(r);cd.textContent=e;
+      if(Math.random()<.5){cq.innerHTML='<p><b>Are you sure?</b></p><button class="btn" id="y">Yes</button> <button class="ghost" id="n">No</button>';$('#y').onclick=()=>cq.innerHTML='<p class="mut">Bold of you.</p>';$('#n').onclick=()=>cq.innerHTML='<p class="mut">Same answer. Just wanted to see you hesitate.</p>'}
+      return}
+    else e+=k;cd.textContent=e||'0'}
+},
+b(b){
+  let p=100,last=0;b.innerHTML='<div style="text-align:center"><h3 id="bp">100%</h3><div class="batt"><i id="bf" style="width:100%"></i></div><p class="mut" id="bm">Battery is fine. Keep an eye on it.</p></div>';
+  const M=[[80,'Battery is fine. Keep an eye on it.'],[50,'Is it dropping? It feels like it’s dropping.'],[25,'You looked. That cost us.'],[10,'Please stop watching.'],[0,'This is the end.']];
+  function drop(n){p-=n;if(p<=1){p=100;toast('Recharged by pure panic.')}$('#bp').textContent=Math.floor(p)+'%';const f=$('#bf');f.style.width=p+'%';f.style.background=p<25?'#b91c1c':p<50?'#d97706':'var(--ok)';$('#bm').textContent=M.find(x=>p>x[0])?.[1]||M[4][1]}
+  b.onmousemove=b.ontouchstart=()=>{const t=Date.now();if(t-last>250){last=t;drop(1+Math.random()*2)}};
+  timers.push(setInterval(()=>drop(.7),1200));
+}};
+go('home');
+</script>
+</body>
+</html>
